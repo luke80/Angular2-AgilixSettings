@@ -1,0 +1,27 @@
+{
+  "name": "angular2-agilixsettings",
+  "version": "1.0.0",
+  "description": "Angular2 and Material Design driven project to interface with Agilix's settings.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luke80/Angular2-AgilixSettings.git"
+  },
+  "author": "Luke Rebarchik",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luke80/Angular2-AgilixSettings/issues"
+  },
+  "homepage": "https://github.com/luke80/Angular2-AgilixSettings#readme",
+  "dependencies": {
+    "@angular/animations": "^4.1.3",
+    "@angular/common": "^4.1.3",
+    "@angular/core": "^4.1.3",
+    "@angular/material": "^2.0.0-beta.6",
+    "rxjs": "^5.4.0",
+    "zone.js": "^0.8.11"
+  }
+}
