@@ -1,27 +1,51 @@
 {
-  "name": "angular2-agilixsettings",
-  "version": "1.0.0",
-  "description": "Angular2 and Material Design driven project to interface with Agilix's settings.",
-  "main": "index.html",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/luke80/Angular2-AgilixSettings.git"
-  },
-  "author": "Luke Rebarchik",
+  "name": "angular-material-demo",
+  "version": "0.0.0",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/luke80/Angular2-AgilixSettings/issues"
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
-  "homepage": "https://github.com/luke80/Angular2-AgilixSettings#readme",
+  "private": true,
   "dependencies": {
-    "@angular/animations": "^4.1.3",
-    "@angular/common": "^4.1.3",
-    "@angular/core": "^4.1.3",
-    "@angular/material": "^2.0.0-beta.6",
+    "@angular/animations": "^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/forms": "^4.0.0",
+    "@angular/http": "^4.0.0",
+    "@angular/material": "^2.0.0-beta.2",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-browser-dynamic": "^4.0.0",
+    "@angular/router": "^4.0.0",
+    "core-js": "^2.4.1",
+    "hammerjs": "^2.0.8",
     "rxjs": "^5.4.0",
-    "zone.js": "^0.8.11"
+    "zone.js": "^0.8.4"
+  },
+  "devDependencies": {
+    "@angular/cli": "^1.0.0",
+    "@angular/compiler-cli": "^4.0.0",
+    "@types/hammerjs": "^2.0.34",
+    "@types/jasmine": "2.5.50",
+    "@types/node": "^7.0.12",
+    "codelyzer": "^3.0.0",
+    "jasmine-core": "^2.5.2",
+    "jasmine-spec-reporter": "^4.0.0",
+    "karma": "^1.5.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-cli": "^1.0.1",
+    "karma-coverage-istanbul-reporter": "^1.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "material-colors": "^1.2.5",
+    "protractor": "^5.1.0",
+    "ts-node": "^3.0.2",
+    "tslint": "^5.0.0",
+    "typescript": "^2.2.0"
   }
 }
