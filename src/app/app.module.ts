@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { DialogContentComponent } from './material-demo/material-demo.component';
 import { WelcomeComponent } from './welcome.component';
+import { LoginComponent } from './login.component';
 import { MaterialDemoComponent } from './material-demo/material-demo.component';
 
 //import { MenuComponent } from './menu/menu.component';
@@ -28,7 +29,8 @@ import { appRoutes } from './routes';
   declarations: [
     AppComponent, DialogContentComponent,
     WelcomeComponent,
-    MaterialDemoComponent
+    MaterialDemoComponent,
+    LoginComponent
     //,MenuComponent
   ],
   providers: [

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthService } from './services/auth.service'
 
@@ -6,7 +7,7 @@ import { AuthService } from './services/auth.service'
   template: `
     <div *ngIf="!authService.currentUser">
       <h1>Please login to access this tool</h1>
-      <button md-raised-button class="app-sidebar-button" (click)="openLogin()">
+      <button md-raised-button class="app-sidebar-button" [routerLink]="['/login']">
         <md-icon class="example-icon">verified_user</md-icon>
         Login            
       </button>
@@ -18,7 +19,7 @@ import { AuthService } from './services/auth.service'
 })
 
 export class WelcomeComponent implements OnInit {
-  constructor(private authService:AuthService) {
+  constructor(private authService:AuthService, private router: Router) {
 
   }
 
@@ -27,6 +28,6 @@ export class WelcomeComponent implements OnInit {
   }
 
   openLogin() {
-    
+
   }
 }
