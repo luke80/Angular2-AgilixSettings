@@ -1,0 +1,46 @@
+/* You can add global styles to this file, and also import other style files */
+//@import 'angular-material-demo-theme.scss';
+@import 'custom-app-theme.scss';
+
+body {
+  margin: 0;
+  min-height:100vh;
+  font-family: 'Open Sans', sans-serif;
+
+  & > app-root, & > app-root > md-sidenav-container {
+    min-height: 100vh;
+  }
+
+  .app-content {
+    margin:1em;
+
+    h1, h2, h3, h4, h5, h6 {
+      &:first-child {
+        margin-top:0;
+      }
+    }
+  }
+}
+
+$logo-bg-scalar: .65;
+md-toolbar#settings-top-bar:after {
+  background-image: url(/assets/byuis-logo-white.svg);
+  background-repeat: no-repeat;
+  background-position-x: 100%;
+  background-size: #{524 * $logo-bg-scalar}px #{66 * $logo-bg-scalar}px;
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: calc(64px - 1em);
+  width: calc(#{524 * $logo-bg-scalar}px + 1em);
+  box-sizing: content-box;
+  margin: .5em;
+}
+
+/*
+.grid-test-1 > figure.mat-figure {
+  justify-content: flex-start !important;
+}
+*/

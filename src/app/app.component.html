@@ -1,0 +1,65 @@
+<md-sidenav-container [class.m2app-dark]="isDarkTheme">
+  <md-sidenav #sidenav mode="over" class="app-sidenav">
+    <md-toolbar>
+      <span>Please log in to use this tool...</span>
+      <md-toolbar-row>
+        <button md-raised-button class="app-sidebar-button">
+            <md-icon class="example-icon">verified_user</md-icon>
+            Login            
+        </button>
+      </md-toolbar-row>
+      <md-toolbar-row>
+        <button md-button (click)="isDarkTheme = !isDarkTheme" class="app-sidebar-button">
+          <span *ngIf="isDarkTheme">Activate Light Theme</span>
+          <span *ngIf="!isDarkTheme">Activate Dark Theme</span>
+        </button>
+      </md-toolbar-row>
+      <md-toolbar-row>
+        <a [routerLink]="['demo']" (click)="sidenav.toggle()">View Angular Material Demo</a>
+      </md-toolbar-row>
+
+      <!--
+      <md-toolbar-row>
+        <span>Settings</span>
+        <span class="app-toolbar-filler"></span>
+        <md-icon class="example-icon">build</md-icon>
+      </md-toolbar-row>
+
+
+
+      <md-toolbar-row>
+        <span>Favorites</span>
+        <span class="app-toolbar-filler"></span>
+        <md-icon class="example-icon">favorite</md-icon>
+      </md-toolbar-row>
+
+      <md-toolbar-row>
+        <button md-raised-button color="warn" class="app-sidebar-button">
+              <md-icon class="example-icon">delete</md-icon>
+              Delete
+            </button>
+      </md-toolbar-row>
+      <span>User options:</span>
+      <span class="app-toolbar-filler"></span>
+      <md-icon class="example-icon">build</md-icon>
+      -->
+
+    </md-toolbar>
+  </md-sidenav>
+  <md-toolbar color="primary" id="settings-top-bar">
+    <button md-button class="app-menu-button" (click)="sidenav.toggle()">
+      <i class="material-icons">menu</i>
+    </button>
+    <span class="title">Agilix Course Settings Display</span>
+  </md-toolbar>
+
+  <div class="app-content">
+    <router-outlet></router-outlet>
+  </div>
+</md-sidenav-container>
+
+<!-- Material Fab
+<span class="app-action" [class.m2app-dark]="isDarkTheme">
+  <button md-fab><md-icon>check circle</md-icon></button>
+</span>
+ -- /Material Fab-->
