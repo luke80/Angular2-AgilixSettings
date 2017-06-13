@@ -3,7 +3,7 @@
     <md-toolbar>
       <span>Please log in to use this tool...</span>
       <md-toolbar-row>
-        <button md-raised-button class="app-sidebar-button" [routerLink]="['/login']">
+        <button md-raised-button class="app-sidebar-button" [routerLink]="['/login']" (click)="sidenav.toggle()">
             <md-icon class="example-icon">verified_user</md-icon>
             Login            
         </button>

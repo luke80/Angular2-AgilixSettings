@@ -1,23 +1,36 @@
-<h1>Login</h1>
-<hr>
-<div class="col-md-4">
-  <form #loginForm="ngForm" (ngSubmit)="login(loginForm.value)" autocomplete="off" novalidate>
-    <div class="form-group" >
-      <md-input-container>
-        <em *ngIf="loginForm.controls.userName?.invalid && (loginForm.controls.userName?.touched || mouseoverLogin)">Required</em>
-        <input mdInput (ngModel)="userName" name="userName" id="userName" type="text" required="true" class="form-control" placeholder="User Name" />
-      </md-input-container>
-    </div>
-    <div class="form-group" >
-      <md-input-container>
-        <em *ngIf="loginForm.controls.password?.invalid && (loginForm.controls.password?.touched || mouseoverLogin)">Required</em>
-        <input mdInput (ngModel)="password" name="password" id="password" type="password" required="true" class="form-control" placeholder="Password" />
-      </md-input-container>
-    </div>
+<md-card>
+  <md-card-content>
+    <md-card-title>
+      <h2>Login</h2>
+    </md-card-title>
+    <div class="col-md-4">
+      <form #loginForm="ngForm" (ngSubmit)="login(loginForm.value)" autocomplete="off" novalidate>
+        <div class="form-group" >
+          <md-input-container>
+            <em *ngIf="loginForm.controls.userName?.invalid && (loginForm.controls.userName?.touched || mouseoverLogin)">Required</em>
+            <input mdInput (ngModel)="userName" name="userName" id="userName" type="text" required="true" class="form-control" placeholder="User Name" />
+          </md-input-container>
+        </div>
+        <div class="form-group" >
+          <md-input-container>
+            <em *ngIf="loginForm.controls.password?.invalid && (loginForm.controls.password?.touched || mouseoverLogin)">Required</em>
+            <input mdInput (ngModel)="password" name="password" id="password" type="password" required="true" class="form-control" placeholder="Password" />
+          </md-input-container>
+        </div>
+        <div class="form-group" >
+          <md-select placeholder="Select access domain" [(ngModel)]="userspace" name="userspace">
+            <md-option *ngFor="let userspace of userspaces" [value]="userspace.domain">
+              [{{userspace.domain}}] {{userspace.domainTitle}}
+            </md-option>
+          </md-select>
+          <p>Logging into: {{userspace}}</p>
+        </div>
 
-    <span (mouseenter)="mouseoverLogin=true" (mouseleave)="mouseoverLogin=false">
-      <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary">Login</button>
-    </span>
-    <button type="button" (click)="cancel()" class="btn btn-default">Cancel</button>
-  </form>
-</div>
+        <span (mouseenter)="mouseoverLogin=true" (mouseleave)="mouseoverLogin=false">
+          <button md-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="btn btn-primary app-button">Login</button>
+        </span>
+        <button md-raised-button type="button" (click)="cancel()" class="btn btn-default app-button">Cancel</button>
+      </form>
+    </div>
+  </md-card-content>
+</md-card>
