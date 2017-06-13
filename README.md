@@ -9,3 +9,12 @@ Uses Agilix's DLAP API and Angular to expose settings and data.
 5. Install Angular 2 CLI globally with ``` npm install -g @angular/cli ```
 6. Run ``` npm start ```
 7. [Fun and profit](http://localhost.byu.edu:4200). <-- this will only work after you've done the above
+
+### Development notes
+The local development hostname is .byu.edu so that the CAS authentication step returns more than a username and token.
+
+Todo:
+* break components into separate files
+* barrel include folder contents
+* build batch process and request throttle service
+* complete the todo list
