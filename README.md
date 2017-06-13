@@ -7,4 +7,4 @@ Uses Agilix's DLAP API and Angular to expose settings and data.
 3. Ensure that your computer is running node properly by typing ``` npm ``` into the command prompt.
 4. Run ``` npm install ``` (then wait, it is likely to take a hot minute)
 5. Run ``` npm serve ```
-6. Fun and profit.
+6. [Fun and profit](http://localhost.byu.edu:4200). <-- this will only work after you've done the above
