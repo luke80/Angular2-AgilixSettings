@@ -6,5 +6,6 @@ Uses Agilix's DLAP API and Angular to expose settings and data.
 2. [Install node.js](https://nodejs.org/en/)
 3. Ensure that your computer is running node properly by typing ``` npm ``` into the command prompt.
 4. Run ``` npm install ``` (then wait, it is likely to take a hot minute)
-5. Run ``` npm start ```
-6. [Fun and profit](http://localhost.byu.edu:4200). <-- this will only work after you've done the above
+5. Install Angular 2 CLI globally with ``` npm install -g @angular/cli ```
+6. Run ``` npm start ```
+7. [Fun and profit](http://localhost.byu.edu:4200). <-- this will only work after you've done the above
