@@ -1,7 +1,7 @@
 export interface IUser {
-  userName: string
-  firstName: string
-  lastName: string
+  username?: string
+  firstname: string
+  lastname: string
   token?: string
   userspace: string
   lastcall?: Date
