@@ -12,12 +12,15 @@ import { AppComponent } from './app.component';
 import { DialogContentComponent } from './material-demo/material-demo.component';
 import { WelcomeComponent } from './welcome.component';
 import { LoginComponent } from './login.component';
+import { DomainListComponent } from './domain-list.component';
 import { MaterialDemoComponent } from './material-demo/material-demo.component';
 
 //import { MenuComponent } from './menu/menu.component';
-import { AuthService } from './services/auth.service'
+import { AuthService } from './services/auth.service';
+import { RequestService } from './services/request.service';
 
 import { appRoutes } from './routes';
+import { AuthRouteActivator } from './services/auth-route-activator.service';
 
 @NgModule({
   imports: [
@@ -32,13 +35,16 @@ import { appRoutes } from './routes';
     AppComponent, DialogContentComponent,
     WelcomeComponent,
     MaterialDemoComponent,
-    LoginComponent
+    LoginComponent,
+    DomainListComponent
     //,MenuComponent
   ],
   providers: [
-    AuthService
+    AuthService,
+    RequestService,
+    AuthRouteActivator
   ],
-  entryComponents: [DialogContentComponent],
-  bootstrap: [AppComponent],
+  entryComponents: [ DialogContentComponent ],
+  bootstrap: [ AppComponent ],
 })
 export class AppModule { }

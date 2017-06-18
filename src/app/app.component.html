@@ -1,12 +1,19 @@
 <md-sidenav-container [class.m2app-dark]="isDarkTheme">
   <md-sidenav #sidenav mode="over" class="app-sidenav">
     <md-toolbar>
-      <span>Please log in to use this tool...</span>
-      <md-toolbar-row>
+      <span *ngIf="!authService.isAuthenticated()">Please log in to use this tool...</span>
+      <md-toolbar-row *ngIf="!authService.isAuthenticated()">
         <button md-raised-button class="app-sidebar-button" [routerLink]="['/login']" (click)="sidenav.toggle()">
             <md-icon class="example-icon">verified_user</md-icon>
             Login            
         </button>
+      </md-toolbar-row>
+      <span *ngIf="authService.isAuthenticated()">Select the next action:</span>
+      <md-toolbar-row *ngIf="authService.isAuthenticated()">
+        <a [routerLink]="['welcome']" (click)="sidenav.toggle()">Welcome</a>
+      </md-toolbar-row>
+      <md-toolbar-row *ngIf="authService.isAuthenticated()">
+        <a [routerLink]="['list-domains']" (click)="sidenav.toggle()">List Domains</a>
       </md-toolbar-row>
       <md-toolbar-row>
         <button md-button (click)="isDarkTheme = !isDarkTheme" class="app-sidebar-button">

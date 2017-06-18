@@ -7,16 +7,13 @@ import { IUser } from './models/user.model';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  providers: [ AuthService ]
+  styleUrls: ['./app.component.scss']
 })
 
 export class AppComponent {
   isDarkTheme = false;
-  lastLoginResult: string;
-  private authUser: IUser;
 
-  constructor(private dialog: MdDialog) {
+  constructor(private dialog: MdDialog, private authService: AuthService) {
 
   }
 
@@ -25,7 +22,7 @@ export class AppComponent {
     const dialogRef = this.dialog.open(DialogComponent);
 
     dialogRef.afterClosed().subscribe(result => {
-      this.lastLoginResult = result;
+      //this.lastLoginResult = result;
     })
   }
 }
