@@ -6,35 +6,45 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 import { AuthService } from './auth.service';
-import { IDlapResponse } from '../models/dlap-response.model';
+import { IDlapResponse, IDlapRequest, IDlap } from '../models/index';
 
 @Injectable()
 
 export class RequestService {
   lastResponse:IDlapResponse;
-  private requestUrl = 'https://gls.agilix.com/cmd/?_format=json'+((this.authService && this.authService.currentUser)?'&token='+this.authService.currentUser.token:'');
-  private requests:IDlapResponse[];
+  private requestUrl = 'https://gls.agilix.com/cmd/?_format=json'+((this.authService && this.authService.currentUser)?'&_token='+this.authService.currentUser.token:'');
+  private requests:IDlap[];
   
   constructor(private http: Http, private authService: AuthService) { this.requests = []; }
 
   doRequest(cmd: string, args: Object): Observable<IDlapResponse> {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
-    let requestObject = {
+    let requestObject = <IDlapRequest>{
       request: {
         cmd: cmd
       }
     };
-
-    console.log('token',this.authService.currentUser.token);
-    this.requestUrl += '&_token='+this.authService.currentUser.token;
-
     for(let arg of Object.keys(args)) {
       requestObject.request[arg] = args[arg];
     }
+    let prevReq = <IDlap>this.findPrevious(requestObject)
+    if(prevReq && prevReq.response) {
+      return Observable.of(<IDlapResponse>prevReq.response);
+    }
+
+    console.log('token',this.authService.currentUser.token);
+    if(!(/\&_token\=/).test(this.requestUrl))
+      this.requestUrl += '&_token='+this.authService.currentUser.token;
+
     return this.http.post(this.requestUrl,  requestObject, options)
       .map( (response: Response) => response.json() )
-      .do( data => this.requests.push(<IDlapResponse> data) )
+      .do( data => this.requests.push(
+        <IDlap> {
+          request: requestObject,
+          response: <IDlapResponse>data
+        }
+      ) )
       .do( data => console.log('data response: ', data) )
       .catch( this.error )
   }
@@ -46,5 +56,14 @@ export class RequestService {
 
   getLastResponse() {
     return this.requests[this.requests.length--];
+  }
+
+  findPrevious(requestObject): IDlap {
+    for(let dlapi of this.requests) {
+      console.log("compare:",dlapi.request,requestObject);
+      if(JSON.stringify(dlapi.request) == JSON.stringify(requestObject))
+        return dlapi;
+    }
+    return <IDlap>requestObject;
   }
 }
