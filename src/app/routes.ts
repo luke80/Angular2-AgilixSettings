@@ -8,7 +8,7 @@ import { MaterialDemoComponent } from './material-demo/material-demo.component'
 import { AuthRouteActivator } from './services/auth-route-activator.service'
 
 export const appRoutes:Routes = [
-  { path: 'welcome', component: WelcomeComponent },
+  { path: 'welcome', component: WelcomeComponent, canActivate: [ AuthRouteActivator ] },
   { path: 'list-domains', component: DomainListComponent, canActivate: [ AuthRouteActivator ] },
   { path: '', redirectTo: '/welcome', pathMatch: 'full'},
   { path: 'demo', component: MaterialDemoComponent },
