@@ -7,6 +7,10 @@ import { IUser } from './models/user.model';
 @Component({
   templateUrl: 'login.component.html',
   styles: [`
+    #login-cards {
+      display: flex;
+      align-items: stretch;
+    }
     .form-group {
       position: relative;
       margin: 1em auto;
@@ -15,7 +19,13 @@ import { IUser } from './models/user.model';
       position:absolute;top:0;right:0;
       color:#E05C65;
       padding-left: 10px;
-    } 
+    }
+    md-card {
+      display: inline-block;
+    }
+    #cas-login button {
+      width:100%;
+    }
   `]
 })
 
