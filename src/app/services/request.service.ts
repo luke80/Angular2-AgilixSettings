@@ -12,14 +12,14 @@ import { IDlapResponse, IDlapRequest, IDlap } from '../models/index';
 
 export class RequestService {
   lastResponse:IDlapResponse;
-  private requestUrl = 'https://gls.agilix.com/cmd/?_format=json'+((this.authService && this.authService.currentUser)?'&_token='+this.authService.currentUser.token:'');
+  private requestUrl = 'https://gls.agilix.com/cmd/?_format=json';
   private requests:IDlap[];
   
   constructor(private http: Http, private authService: AuthService) { this.requests = []; }
 
   doRequest(cmd: string, args: Object): Observable<IDlapResponse> {
     let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    let options = new RequestOptions({ headers: headers, withCredentials: true });
     let requestObject = <IDlapRequest>{
       request: {
         cmd: cmd
@@ -32,10 +32,6 @@ export class RequestService {
     if(prevReq && prevReq.response) {
       return Observable.of(<IDlapResponse>prevReq.response);
     }
-
-    console.log('token',this.authService.currentUser.token);
-    if(!(/\&_token\=/).test(this.requestUrl))
-      this.requestUrl += '&_token='+this.authService.currentUser.token;
 
     return this.http.post(this.requestUrl,  requestObject, options)
       .map( (response: Response) => response.json() )

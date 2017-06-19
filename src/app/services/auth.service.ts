@@ -18,7 +18,7 @@ export class AuthService {
 
   doLogin(userName: string, password: string, userspace: string = 'byuis'): Observable<IUser> {
     let headers = new Headers({ 'Content-Type': 'application/json' });
-    let options = new RequestOptions({ headers: headers });
+    let options = new RequestOptions({ headers: headers, withCredentials: true });
     return this.http.post(this.loginUrl,  {
           request: {
             cmd: 'login',
