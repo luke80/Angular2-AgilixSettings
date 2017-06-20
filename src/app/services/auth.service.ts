@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, OnInit } from '@angular/core'
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common'
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 
@@ -11,13 +11,19 @@ import { IUser } from '../models/user.model'
 
 @Injectable()
 
-export class AuthService {
+export class AuthService implements OnInit {
   currentUser:IUser
   private loginUrl = 'https://gls.agilix.com/cmd/?_format=json';
   public relogin: Boolean = false;
   private ssoOnce = false;
 
   constructor(private http: Http, private location: Location) { }
+
+  ngOnInit() {
+    if(this.getCookie("sso_token")) {
+      console.log(this.getCookie("sso_token"));
+    }
+  }
 
   doLogin(userName: string, password: string, userspace: string = 'byuis'): Observable<IUser> {
     let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -59,11 +65,27 @@ export class AuthService {
   }
 
   initiateCasLogin(userspace: string) {
-    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(window.location.protocol+"//"+window.location.host)+"/login/token/%25TOKEN%25"; //  ; //  window.location.pathname
+    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(window.location.protocol+"//"+window.location.host)+"/login?token%3D%25TOKEN%25"; //  ; //  window.location.pathname
     console.log(ssoURI);
     if(!this.ssoOnce && confirm("Go go the CAS login?")) {
       this.ssoOnce = true;
       window.setTimeout("window.location.href = '"+ssoURI+"';",250);
     }
+  }
+  getCookie(cname): string {
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1);
+      if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return null;
+  }
+  setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
   }
 }

@@ -1,3 +1,7 @@
 <ul *ngIf="domainResponse">
-  <li *ngFor="let domain of domainResponse.domain">{{domain.name}}</li>
+  <li *ngFor="let domain of domainResponse.domain">
+    <h3>{{domain.name}}</h3>
+    <div>{{domain.creationdate | date:"yyyy/dd MMM"}}</div>
+    <p></p>
+  </li>
 </ul>

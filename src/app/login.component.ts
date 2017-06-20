@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
     {domainId: 4, domainTitle: 'Design Sandbox', domain: 'designsandbox'}
   ];
   private token: string;
+  private sub;
 
   constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
 
@@ -53,7 +54,9 @@ export class LoginComponent implements OnInit {
       .subscribe(
         currentUser => this.authService.currentUser,
         error => console.error("Error: ", error),
-        () => this.router.navigate(['welcome'])
+        () => {
+          this.router.navigate(['welcome']);
+        }
       );
   }
   initiateCasLogin() {
@@ -68,14 +71,21 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.token = this.route.snapshot.params['token']
+    if(this.authService.getCookie("sso_token"))
+      this.token = this.authService.getCookie("sso_token");
+    this.sub = this.route.queryParams.subscribe(
+      params => { if(params['token']) {this.token = params['token'] || ""} }
+    );
     if(this.token) {
       console.log('LoginComponent token from url:',this.token);
       this.authService.doCasLogin(this.token)
       .subscribe(
         currentUser => this.authService.currentUser,
         error => console.error("Error: ", error),
-        () => this.router.navigate(['welcome'])
+        () => {
+          this.authService.setCookie("sso_token", this.token, 2);
+          this.router.navigate(['welcome'])
+        }
       );
     }
     if(this.authService.currentUser && this.authService.currentUser.token && !this.authService.relogin)
