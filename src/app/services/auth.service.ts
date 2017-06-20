@@ -15,6 +15,7 @@ export class AuthService {
   currentUser:IUser
   private loginUrl = 'https://gls.agilix.com/cmd/?_format=json';
   public relogin: Boolean = false;
+  private ssoOnce = false;
 
   constructor(private http: Http, private location: Location) { }
 
@@ -33,6 +34,20 @@ export class AuthService {
       .do( () => console.log('loginUser currentUser: ',this.currentUser) )
       .catch( this.error )
   }
+  doCasLogin(token:string): Observable<IUser> {
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers, withCredentials: true });
+    return this.http.post(this.loginUrl,  {
+          request: {
+            cmd: 'login',
+            token: token
+          }
+        }, options)
+      .map( (response: Response) => response.json() )
+      .do( data => this.currentUser = <IUser> data.response.user )
+      .do( () => console.log('loginUser currentUser: ',this.currentUser) )
+      .catch( this.error )
+  }
 
   private error(err: Response) {
     console.error(err)
@@ -44,7 +59,11 @@ export class AuthService {
   }
 
   initiateCasLogin(userspace: string) {
-    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(location.protocol+"//"+location.host+location.path(true))+"?token%3D%25TOKEN%25%26state%3D%25STATE%25";
-    location.go(ssoURI);
+    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(window.location.protocol+"//"+window.location.host)+"/login/token/%25TOKEN%25"; //  ; //  window.location.pathname
+    console.log(ssoURI);
+    if(!this.ssoOnce && confirm("Go go the CAS login?")) {
+      this.ssoOnce = true;
+      window.setTimeout("window.location.href = '"+ssoURI+"';",250);
+    }
   }
 }

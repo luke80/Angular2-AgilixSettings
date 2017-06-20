@@ -10,7 +10,8 @@ import { AuthRouteActivator } from './services/auth-route-activator.service'
 export const appRoutes:Routes = [
   { path: 'welcome', component: WelcomeComponent, canActivate: [ AuthRouteActivator ] },
   { path: 'list-domains', component: DomainListComponent, canActivate: [ AuthRouteActivator ] },
-  { path: '', redirectTo: '/welcome', pathMatch: 'full'},
   { path: 'demo', component: MaterialDemoComponent },
-  { path: 'login', component: LoginComponent }
+  { path: 'login/token/:token', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: '/welcome', pathMatch: 'full'},
 ];

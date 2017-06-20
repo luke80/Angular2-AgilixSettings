@@ -11,7 +11,7 @@ export class AuthRouteActivator implements CanActivate {
   }
 
   canActivate(route:ActivatedRouteSnapshot) {
-    console.log('authService isAuthenticated():',this.authService.isAuthenticated());
+    console.log('authService isAuthenticated():',this.authService.isAuthenticated(),window.location.pathname);
     if(!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
       return false;

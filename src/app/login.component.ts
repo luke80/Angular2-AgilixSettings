@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 
 import { AuthService } from './services/auth.service'
 import { IUser } from './models/user.model';
@@ -26,19 +26,25 @@ import { IUser } from './models/user.model';
     #cas-login button {
       width:100%;
     }
+    div[vertically-aligned] {
+      display: flex;
+      align-items: center;
+      padding: 1em;
+    }
   `]
 })
 
 export class LoginComponent implements OnInit {
   private userspace: string = 'byuis';
   private userspaces = [
-    {domainId: 1, domainTitle: 'Main Domain', domain: 'domain'},
-    {domainId: 2, domainTitle: 'Other Domain', domain: 'something'},
-    {domainId: 3, domainTitle: 'Domainish', domain: 'ish'},
-    {domainId: 4, domainTitle: 'Secondary Domain', domain: 'secondary'}
+    {domainId: 1, domainTitle: 'Main Domain', domain: 'byuis'},
+    {domainId: 2, domainTitle: 'BYU Master Courses', domain: 'byumastercourses'},
+    {domainId: 3, domainTitle: 'BYUIS Production', domain: 'byuisproduction'},
+    {domainId: 4, domainTitle: 'Design Sandbox', domain: 'designsandbox'}
   ];
+  private token: string;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
 
   }
 
@@ -50,12 +56,28 @@ export class LoginComponent implements OnInit {
         () => this.router.navigate(['welcome'])
       );
   }
+  initiateCasLogin() {
+    if(!this.token)
+      this.authService.initiateCasLogin(this.userspace)
+    else
+      console.log("token set, not going to CAS");
+  }
 
   cancel() {
     this.router.navigate(['welcome'])
   }
 
   ngOnInit() {
+    this.token = this.route.snapshot.params['token']
+    if(this.token) {
+      console.log('LoginComponent token from url:',this.token);
+      this.authService.doCasLogin(this.token)
+      .subscribe(
+        currentUser => this.authService.currentUser,
+        error => console.error("Error: ", error),
+        () => this.router.navigate(['welcome'])
+      );
+    }
     if(this.authService.currentUser && this.authService.currentUser.token && !this.authService.relogin)
       this.router.navigate(['welcome']);
   }
