@@ -40,4 +40,9 @@ export class AuthService {
   isAuthenticated() {
     return (!!this.currentUser && !!this.currentUser.token);
   }
+
+  initiateCasLogin(userspace: string) {
+    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(Location.protocol+"//"+Location.host+Location.pathname)+"?token%3D%25TOKEN%25%26state%3D%25STATE%25";
+    Location.href = ssoURI;
+  }
 }
