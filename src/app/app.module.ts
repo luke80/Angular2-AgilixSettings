@@ -1,6 +1,7 @@
 import 'hammerjs';
 
 import { NgModule } from '@angular/core';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common'
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
@@ -42,7 +43,8 @@ import { AuthRouteActivator } from './services/auth-route-activator.service';
   providers: [
     AuthService,
     RequestService,
-    AuthRouteActivator
+    AuthRouteActivator,
+    Location, {provide: LocationStrategy, useClass: PathLocationStrategy}
   ],
   entryComponents: [ DialogContentComponent ],
   bootstrap: [ AppComponent ],

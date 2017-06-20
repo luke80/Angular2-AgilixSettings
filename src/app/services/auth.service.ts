@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core'
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common'
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
+
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
@@ -14,7 +16,7 @@ export class AuthService {
   private loginUrl = 'https://gls.agilix.com/cmd/?_format=json';
   public relogin: Boolean = false;
 
-  constructor(private http: Http) { }
+  constructor(private http: Http, private location: Location) { }
 
   doLogin(userName: string, password: string, userspace: string = 'byuis'): Observable<IUser> {
     let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -42,7 +44,7 @@ export class AuthService {
   }
 
   initiateCasLogin(userspace: string) {
-    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(Location.protocol+"//"+Location.host+Location.pathname)+"?token%3D%25TOKEN%25%26state%3D%25STATE%25";
-    Location.href = ssoURI;
+    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(location.protocol+"//"+location.host+location.path(true))+"?token%3D%25TOKEN%25%26state%3D%25STATE%25";
+    location.go(ssoURI);
   }
 }
