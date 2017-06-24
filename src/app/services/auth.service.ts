@@ -20,8 +20,9 @@ export class AuthService implements OnInit {
   constructor(private http: Http, private location: Location) { }
 
   ngOnInit() {
-    if(this.getCookie("sso_token")) {
-      console.log(this.getCookie("sso_token"));
+    let cookieToken = this.getCookie("sso_token");
+    if(cookieToken != "") {
+      this.doCasLogin(cookieToken);
     }
   }
 
@@ -43,12 +44,9 @@ export class AuthService implements OnInit {
   doCasLogin(token:string): Observable<IUser> {
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers, withCredentials: true });
-    return this.http.post(this.loginUrl,  {
-          request: {
-            cmd: 'login',
-            token: token
-          }
-        }, options)
+    return this.http.post(this.loginUrl.replace(/(cmd\/)/i,'$1login'),  {
+      _token: token
+    }, options)
       .map( (response: Response) => response.json() )
       .do( data => this.currentUser = <IUser> data.response.user )
       .do( () => console.log('loginUser currentUser: ',this.currentUser) )
@@ -87,5 +85,29 @@ export class AuthService implements OnInit {
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
+  }
+ checkCookie(): Boolean {
+    if(this.getCookie("sso_token") != "") {
+      console.log('LoginComponent token:',this.currentUser,this.getCookie("sso_token"));
+      this.doCasLogin(this.getCookie("sso_token"))
+        .subscribe(
+          currentUser => this.currentUser,
+          error => console.error("Error: ", error),
+          () => {
+            if(this.currentUser) {
+              console.log("checkCookie!!",this.currentUser);
+              this.setCookie("sso_token", this.currentUser.token, 2);
+            }
+            /*
+            if(this.getCookie("path"))
+              this.router.navigate([this.getCookie("path")])
+            else
+              this.router.navigate(['welcome'])
+            */
+          }
+      );
+      return true;
+    }
+    return false;
   }
 }

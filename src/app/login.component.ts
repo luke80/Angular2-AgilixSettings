@@ -42,7 +42,6 @@ export class LoginComponent implements OnInit {
     {domainId: 3, domainTitle: 'BYUIS Production', domain: 'byuisproduction'},
     {domainId: 4, domainTitle: 'Design Sandbox', domain: 'designsandbox'}
   ];
-  private token: string;
   private sub;
 
   constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
@@ -60,10 +59,7 @@ export class LoginComponent implements OnInit {
       );
   }
   initiateCasLogin() {
-    if(!this.token)
-      this.authService.initiateCasLogin(this.userspace)
-    else
-      console.log("token set, not going to CAS");
+    this.authService.initiateCasLogin(this.userspace)
   }
 
   cancel() {
@@ -71,21 +67,20 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.authService.getCookie("sso_token"))
-      this.token = this.authService.getCookie("sso_token");
     this.sub = this.route.queryParams.subscribe(
-      params => { if(params['token']) {this.token = params['token'] || ""} }
+      params => { if(params['token'] && this.authService.currentUser) {this.authService.currentUser.token = params['token'] || ""} }
     );
-    if(this.token) {
-      console.log('LoginComponent token from url:',this.token);
-      this.authService.doCasLogin(this.token)
-      .subscribe(
-        currentUser => this.authService.currentUser,
-        error => console.error("Error: ", error),
-        () => {
-          this.authService.setCookie("sso_token", this.token, 2);
-          this.router.navigate(['welcome'])
-        }
+    if(this.authService.getCookie("sso_token") != "" || (this.authService.currentUser && this.authService.currentUser.token)) {
+      console.log('LoginComponent token:',this.authService.currentUser,this.authService.getCookie("sso_token"));
+      this.authService.doCasLogin((this.authService.currentUser)?this.authService.currentUser.token:this.authService.getCookie("sso_token"))
+        .subscribe(
+          currentUser => this.authService.currentUser,
+          error => console.error("Error: ", error),
+          () => {
+            if(this.authService.currentUser)
+              this.authService.setCookie("sso_token", this.authService.currentUser.token, 2);
+            this.router.navigate(['welcome'])
+          }
       );
     }
     if(this.authService.currentUser && this.authService.currentUser.token && !this.authService.relogin)
