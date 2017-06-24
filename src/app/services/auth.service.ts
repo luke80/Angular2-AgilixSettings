@@ -21,7 +21,8 @@ export class AuthService implements OnInit {
 
   ngOnInit() {
     let cookieToken = this.getCookie("sso_token");
-    if(cookieToken != "") {
+    if(cookieToken != null && cookieToken != "") {
+      console.log("Attemptin to use cookie value to authenticate with CAS",cookieToken);
       this.doCasLogin(cookieToken);
     }
   }
@@ -87,9 +88,10 @@ export class AuthService implements OnInit {
     document.cookie = cname + "=" + cvalue + "; " + expires;
   }
  checkCookie(): Boolean {
-    if(this.getCookie("sso_token") != "") {
-      console.log('LoginComponent token:',this.currentUser,this.getCookie("sso_token"));
-      this.doCasLogin(this.getCookie("sso_token"))
+    let cookie = this.getCookie("sso_token");
+    if(cookie) {
+      console.log('LoginComponent token:',this.currentUser,cookie);
+      this.doCasLogin(cookie)
         .subscribe(
           currentUser => this.currentUser,
           error => console.error("Error: ", error),
@@ -107,7 +109,7 @@ export class AuthService implements OnInit {
           }
       );
       return true;
-    }
-    return false;
+    } else
+      return false;
   }
 }
