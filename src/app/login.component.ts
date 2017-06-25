@@ -68,11 +68,17 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.sub = this.route.queryParams.subscribe(
-      params => { if(params['token'] && this.authService.currentUser) {this.authService.currentUser.token = params['token'] || ""} }
+      params => { 
+        if(params['token']) {
+          this.authService.setCookie("sso_token", params['token']);
+          if(this.authService.currentUser) {
+            this.authService.currentUser.token = params['token'] || ""
+          }
+        }
+      }
     );
     if(this.authService.getCookie("sso_token") != "" || (this.authService.currentUser && this.authService.currentUser.token)) {
-      console.log('LoginComponent token:',this.authService.currentUser,this.authService.getCookie("sso_token"));
-      this.authService.doCasLogin((this.authService.currentUser)?this.authService.currentUser.token:this.authService.getCookie("sso_token"))
+      this.authService.authCasToken((this.authService.currentUser)?this.authService.currentUser.token:this.authService.getCookie("sso_token"))
         .subscribe(
           currentUser => this.authService.currentUser,
           error => console.error("Error: ", error),
