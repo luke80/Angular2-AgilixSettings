@@ -92,3 +92,12 @@ md-chip {
   flex: 1 1 auto;
 }
 
+md-toolbar#settings-top-bar:after {
+  display:none;
+}
+
+@media all and (min-width: 700px) {
+  md-toolbar#settings-top-bar:after {
+    display:block;
+  }
+}
