@@ -18,7 +18,7 @@ export class DomainListComponent implements OnInit {
 
   ngOnInit() {
     //this.events = this.route.snapshot.data['events']
-    this.requestService.doRequest('listdomains', {domainid:0}).subscribe(
+    this.requestService.doRequest('listdomains', {domainid:0,limit:1000}).subscribe(
       data => this.domainResponse = data.response.domains,
       resp => { this.domainResponse = resp}
     );
