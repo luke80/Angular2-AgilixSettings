@@ -41,7 +41,7 @@ export class RequestService {
           response: <IDlapResponse>data
         }
       ) )
-      .do( data => console.log('data response: ', data) )
+      //.do( data => console.log('data response: ', data) )
       .catch( this.error )
   }
 
