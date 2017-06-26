@@ -1,7 +1,10 @@
-<ul *ngIf="domainResponse">
-  <li *ngFor="let domain of domainResponse.domain">
-    <h3>{{domain.name}}</h3>
-    <div>{{domain.creationdate | date:"MMM d, yyyy"}}</div>
-    <p></p>
-  </li>
-</ul>
+<div *ngIf="domainResponse" class="domain-cards">
+  <md-card *ngFor="let domain of domainResponse.response.domains.domain">
+    <div id="{{domain.userspace}}" class="logo"></div>
+    <md-card-title>{{domain.name}}</md-card-title>
+    <md-card-content>
+      <div>{{domain.creationdate | date:"MMM d, yyyy"}}</div>
+      <p></p>
+    </md-card-content>
+  </md-card>
+</div>

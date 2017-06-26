@@ -1,0 +1,30 @@
+.domain-cards {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content: space-around;
+  //align-content: stretch;
+  align-items: stretch;
+
+  md-card {
+    position:relative;
+    margin:1em;
+
+    flex-grow: 1;
+
+    .logo {
+      background-size:contain;
+      background-repeat:no-repeat;
+      background-position: 100% 50%;
+
+      float:right;
+      height:5em;
+      width:5em;
+      margin:-1em -1em 0 0;
+
+      display:none;
+      &[style] {
+        display:block;
+      }
+    }
+  }
+}
