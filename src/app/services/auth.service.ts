@@ -21,9 +21,9 @@ export class AuthService implements OnInit {
 
   ngOnInit() {
     let cookieToken = this.getCookie("sso_token");
-    if(cookieToken != null && cookieToken != "") {
-      console.log("Attemptin to use cookie value to authenticate with CAS",cookieToken);
-      this.doCasLogin(cookieToken);
+    if(!!cookieToken && cookieToken != "" && cookieToken != "deleted") {
+      console.log("Attempting to use cookie value to authenticate with CAS... ",cookieToken);
+      this.authCasToken(cookieToken);
     }
   }
 
@@ -38,39 +38,55 @@ export class AuthService implements OnInit {
           }
         }, options)
       .map( (response: Response) => response.json() )
-      .do( data => this.currentUser = <IUser> data.response.user )
+      .do( data => {
+        if(data.response && data.response.user) {
+          this.currentUser = <IUser> data.response.user
+        }
+      } )
       .do( () => console.log('loginUser currentUser: ',this.currentUser) )
       .catch( this.error )
   }
-  doCasLogin(token:string): Observable<IUser> {
+
+  //  todo: test token timeout - refresh
+  authCasToken(token:string): Observable<IUser> {
+    console.log("authCasToken: ",token);
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers, withCredentials: true });
     return this.http.post(this.loginUrl.replace(/(cmd\/)/i,'$1login'),  {
       _token: token
     }, options)
       .map( (response: Response) => response.json() )
-      .do( data => this.currentUser = <IUser> data.response.user )
-      .do( () => console.log('loginUser currentUser: ',this.currentUser) )
+      .do( data => {
+        if(data.response && data.response.user) {
+          this.currentUser = <IUser> data.response.user
+        } else {
+          this.deleteCookie("sso_token")
+        }
+      } )
+      //.do( () => console.log('loginUser currentUser: ',this.currentUser) )
       .catch( this.error )
   }
 
-  private error(err: Response) {
+  private error(err: Response): Observable<any> {
     console.error(err)
     return Observable.throw(err.json().error || 'AuthService error')
   }
 
   isAuthenticated() {
+    //console.log("isAuth(): ",(!!this.currentUser)?this.currentUser:null,(!!this.currentUser && !!this.currentUser.token)?this.currentUser.token:null);
     return (!!this.currentUser && !!this.currentUser.token);
   }
 
   initiateCasLogin(userspace: string) {
-    let ssoURI = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(window.location.protocol+"//"+window.location.host)+"/login?token%3D%25TOKEN%25"; //  ; //  window.location.pathname
-    console.log(ssoURI);
-    if(!this.ssoOnce && confirm("Go go the CAS login?")) {
+    var preAuthPath = this.getCookie("pre-auth_path").replace(/^[\/\\]/,"");
+    let ssoURI: string = "https://gls.agilix.com/SSOLogin?domainid=//" + userspace + "&url="+encodeURI(window.location.protocol+"//"+window.location.host)+"/"+((!!preAuthPath && preAuthPath != "")?preAuthPath:"login")+"?token%3D%25TOKEN%25"; //  ; //  window.location.pathname
+    if(!this.ssoOnce) {
       this.ssoOnce = true;
+      console.log("sending window to ",ssoURI);
       window.setTimeout("window.location.href = '"+ssoURI+"';",250);
     }
   }
+
   getCookie(cname): string {
     let name = cname + "=";
     let ca = document.cookie.split(';');
@@ -79,26 +95,29 @@ export class AuthService implements OnInit {
       while (c.charAt(0)==' ') c = c.substring(1);
       if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
     }
+    //console.error("cookie not found", cname);
     return null;
   }
-  setCookie(cname, cvalue, exdays) {
+  setCookie(cname, cvalue, exdays=2) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
   }
- checkCookie(): Boolean {
+  deleteCookie(cname) {
+    let expires = "expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    document.cookie = cname + "=deleted" + "; " + expires;
+  }
+  checkCookie(): Boolean {
     let cookie = this.getCookie("sso_token");
-    if(cookie) {
-      console.log('LoginComponent token:',this.currentUser,cookie);
-      this.doCasLogin(cookie)
+    if(!!cookie && cookie != "deleted") {
+      this.authCasToken(cookie)
         .subscribe(
           currentUser => this.currentUser,
           error => console.error("Error: ", error),
           () => {
             if(this.currentUser) {
-              console.log("checkCookie!!",this.currentUser);
-              this.setCookie("sso_token", this.currentUser.token, 2);
+              this.setCookie("sso_token", this.currentUser.token);
             }
             /*
             if(this.getCookie("path"))

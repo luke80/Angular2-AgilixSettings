@@ -69,27 +69,28 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.sub = this.route.queryParams.subscribe(
       params => { 
-        if(params['token']) {
+        if(!!params['token']) {
           this.authService.setCookie("sso_token", params['token']);
-          if(this.authService.currentUser) {
+          console.log("cookie set with token: ", params['token']);
+          if(!!this.authService.currentUser) {
             this.authService.currentUser.token = params['token'] || ""
           }
         }
       }
     );
-    if(this.authService.getCookie("sso_token") != "" || (this.authService.currentUser && this.authService.currentUser.token)) {
-      this.authService.authCasToken((this.authService.currentUser)?this.authService.currentUser.token:this.authService.getCookie("sso_token"))
+    if((!!this.authService.getCookie("sso_token") && this.authService.getCookie("sso_token") != "deleted") || (!!this.authService.currentUser && !!this.authService.currentUser.token)) {
+      this.authService.authCasToken((!!this.authService.currentUser)?this.authService.currentUser.token:this.authService.getCookie("sso_token"))
         .subscribe(
           currentUser => this.authService.currentUser,
           error => console.error("Error: ", error),
           () => {
-            if(this.authService.currentUser)
+            if(!!this.authService.currentUser)
               this.authService.setCookie("sso_token", this.authService.currentUser.token, 2);
             this.router.navigate(['welcome'])
           }
       );
     }
-    if(this.authService.currentUser && this.authService.currentUser.token && !this.authService.relogin)
+    if(!!this.authService.currentUser && !!this.authService.currentUser.token && !this.authService.relogin)
       this.router.navigate(['welcome']);
   }
 }
