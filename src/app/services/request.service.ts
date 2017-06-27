@@ -56,7 +56,7 @@ export class RequestService {
 
   findPrevious(requestObject): IDlap {
     for(let dlapi of this.requests) {
-      console.log("compare:",dlapi.request,requestObject);
+      //console.log("compare:",dlapi.request,requestObject);
       if(JSON.stringify(dlapi.request) == JSON.stringify(requestObject))
         return dlapi;
     }
