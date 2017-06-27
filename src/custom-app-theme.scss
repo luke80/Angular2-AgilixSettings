@@ -214,3 +214,14 @@ $secondary-color: map-get($byu-app-accent, 500);
   }
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
+.error {
+  color: map-get($mat-byu-error-base, 500);
+}
+
+.pointer {
+  cursor: pointer;
+}
