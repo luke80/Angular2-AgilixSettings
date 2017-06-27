@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router'
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -17,29 +17,34 @@ import { IDlapResponse } from './models/dlap-response.model';
 export class DomainListComponent implements OnInit {
   private domainResponse: IDlapResponse;
 
-  constructor( private requestService: RequestService, private router: Router, private authService: AuthService, private http: Http ) {
+  constructor( private requestService: RequestService, private router: Router, private authService: AuthService, private http: Http, private cdRef:ChangeDetectorRef ) {
 
   }
 
   ngOnInit() {
-    //this.events = this.route.snapshot.data['events']
     this.requestService.doRequest('listdomains', {domainid:0,limit:1000,select:"data"}).subscribe(
       data => this.domainResponse = data,
       resp => {
         //console.log("resp: ", resp )
       },
       () => {
-        //console.log("onInit",this);
         if(!!this.domainResponse && !!this.domainResponse.response && !! this.domainResponse.response.domains && !! this.domainResponse.response.domains.domain) {
-          let domains = this.domainResponse.response.domains.domain;
-          for(let domain of domains) {
-            //console.log("domain "+domain.name);
-            if(!!domain.data && !!domain.data.customization && !!domain.data.customization.files) {
-              //console.log("domain files: "+domain.name, domain.data.customization.files);
-              if(domain.data.customization.files.file instanceof Array)
+          for(let domain of this.domainResponse.response.domains.domain) {
+            /*  //  Demo request domain data (not needed)
+            this.requestService.doRequest("getdomain2", {domainid: domain.id, select:"data"}).subscribe(
+              data => {
+                console.log(data);
+              }
+            );
+            */
+            domain.cq = false;
+            if(!!domain.data && !!domain.data.customization) {
+              if(!!domain.data.customization.customquestions) {
+                domain.cq = true;
+              }
+              if(!!domain.data.customization.files && !!domain.data.customization.files.file && domain.data.customization.files.file instanceof Array)
                 for(let file of domain.data.customization.files.file) {
                   if(file.type == "style") {
-                    //console.log("domain "+domain.name, file.path);
                     this.getDomainFile(domain.userspace, domain.id, file.path).subscribe(
                       data => {
                         this.parseStylesheetForLogo(data['_body'], domain);
@@ -47,10 +52,9 @@ export class DomainListComponent implements OnInit {
                     );
                   }
                 }
-              else if(!!domain.data.customization.files.file && domain.data.customization.files instanceof Object) {
+              else if(!!domain.data.customization.files && !!domain.data.customization.files.file && domain.data.customization.files instanceof Object) {
                 let file = domain.data.customization.files.file;
                 if(file.type == "style") {
-                  //console.log("domain "+domain.name, file.path);
                   this.getDomainFile(domain.userspace, domain.id, file.path).subscribe(
                     data => this.parseStylesheetForLogo(data['_body'], domain)
                   );
@@ -59,24 +63,23 @@ export class DomainListComponent implements OnInit {
             }
           }
         }
+        this.cdRef.detectChanges();
       }
     );
   }
 
   getDomainFile(domain: string, domainid: number, path: string): Observable<string> {
     return this.http.get("https://"+domain+".brainhoney.com/resource/"+domainid+"/"+path)
-      .do( data => {
-        //console.log("getDomainFile: ", data)
-       } )
+      .do( data => { } )
       .catch( this.error )
   }
 
   parseStylesheetForLogo(stylesheet: string, domain: any): void {
-    let regExp = /div\.welcome_header:after[\w\W]*?background-image:.*?url\(['"']?\.{0,2}\/?([^\"')]+)['"']?\)/i;
+    let regExp = /[\r\n]\s*(?:div\.welcome_header\:(?:after|before)|\.top_right_header)[\w\W]*?\sbackground(?:-image)?:.*?url\(['"']?\.{0,2}\/?([^\"')]+)['"']?\)/i;
     let el = document.getElementById(domain.userspace);
-    if(regExp.test(stylesheet)) {
-      let img = regExp.exec(stylesheet)[1];
-      if(!!img)
+    if(regExp.test(stylesheet))  {
+      let img = regExp.exec(stylesheet)[1].replace(/^\//,"").replace(/\s/g,'%20');
+      if(!!img && !(/(independentstudy|byuis|agilix)/i).test(img))
         el.style.backgroundImage = "url(https://"+domain.userspace+".brainhoney.com/resource/"+domain.id+"/"+img+")";
     }
   }
@@ -88,5 +91,9 @@ export class DomainListComponent implements OnInit {
 
   getDomainLogoBackgroundStyle(domain: any): any {
     return {"background-image": "url(https://"+domain.userspace+".brainhoney.com/resource/"+domain.id+"/"+domain.titleBgImage+")"};
+  }
+
+  dummy(): void {
+
   }
 }
