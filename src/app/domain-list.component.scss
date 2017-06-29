@@ -1,6 +1,14 @@
-.domain-cards {
+.domain-cards, .filters {
   display:flex;
   flex-wrap:wrap;
+}
+
+.filters {
+  justify-content:space-between;
+  align-items:center;
+}
+
+.domain-cards {
   justify-content: space-around;
   //align-content: stretch;
   align-items: stretch;
@@ -10,6 +18,10 @@
     margin:1em;
 
     flex-grow: 1;
+
+    .subtitle {
+      font-size:.75em;
+    }
 
     .logo {
       background-size:contain;

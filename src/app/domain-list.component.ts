@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -16,8 +16,30 @@ import { IDlapResponse } from './models/dlap-response.model';
 
 export class DomainListComponent implements OnInit {
   private domainResponse: IDlapResponse;
-
-  constructor( private requestService: RequestService, private router: Router, private authService: AuthService, private http: Http, private cdRef:ChangeDetectorRef ) {
+  private filterBy: string = "";
+  private visibleDomains: any[] = [];
+  private sortOptions = [
+    {
+      name: "Domain title",
+      property: "name"
+    },
+    {
+      name: "Domain code",
+      property: "userspace"
+    },
+    {
+      name: "Domain creation date",
+      property: "creationdate"
+    },
+    {
+      name: "Domain update date",
+      property: "modifieddate"
+    }
+  ];
+  public sortBy: string = "creationdate";
+  public sortAscending: boolean = false;
+  
+  constructor( private requestService: RequestService, private router: Router, private authService: AuthService, private http: Http ) {
 
   }
 
@@ -29,6 +51,7 @@ export class DomainListComponent implements OnInit {
       },
       () => {
         if(!!this.domainResponse && !!this.domainResponse.response && !! this.domainResponse.response.domains && !! this.domainResponse.response.domains.domain) {
+          this.filterDomains();
           for(let domain of this.domainResponse.response.domains.domain) {
             /*  //  Demo request domain data (not needed)
             this.requestService.doRequest("getdomain2", {domainid: domain.id, select:"data"}).subscribe(
@@ -63,10 +86,42 @@ export class DomainListComponent implements OnInit {
             }
           }
         }
-        this.cdRef.detectChanges();
       }
     );
   }
+
+  filterDomains(): void {
+    if(!!this.domainResponse) {
+      let domains = this.domainResponse.response.domains.domain;
+      console.log("filterBy", this.filterBy);
+      if(this.filterBy == "") {
+        this.visibleDomains = domains.slice(0);
+      } else {
+        this.visibleDomains = domains.filter(
+          domain => {
+            return (domain.name.toLocaleLowerCase().indexOf(this.filterBy.toLocaleLowerCase()) !== -1 || domain.userspace.toLocaleLowerCase().indexOf(this.filterBy.toLocaleLowerCase()) !== -1);
+          }
+        );
+      }
+    }
+  }
+
+  sortDomains(): void {
+    if(!!this.domainResponse) {
+      let sortBy = this.sortBy;
+      let high = (this.sortAscending)?-1:1;
+      let low = (this.sortAscending)?1:-1;
+      this.visibleDomains.sort(function(a, b) {
+        if(a[sortBy].toLocaleLowerCase() > b[sortBy].toLocaleLowerCase())
+          return high;
+        else if(a[sortBy].toLocaleLowerCase() == b[sortBy].toLocaleLowerCase())
+          return 0;
+        else //  if(a[this.sortBy] < b[this.sortBy])
+          return low;
+      });
+    }
+  }
+  
 
   getDomainFile(domain: string, domainid: number, path: string): Observable<string> {
     return this.http.get("https://"+domain+".brainhoney.com/resource/"+domainid+"/"+path)
@@ -79,7 +134,7 @@ export class DomainListComponent implements OnInit {
     let el = document.getElementById(domain.userspace);
     if(regExp.test(stylesheet))  {
       let img = regExp.exec(stylesheet)[1].replace(/^\//,"").replace(/\s/g,'%20');
-      if(!!img && !(/(independentstudy|byuis|agilix)/i).test(img))
+      if(!!el && !!img && !(/(independentstudy|byuis|agilix)/i).test(img))
         el.style.backgroundImage = "url(https://"+domain.userspace+".brainhoney.com/resource/"+domain.id+"/"+img+")";
     }
   }
