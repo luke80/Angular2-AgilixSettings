@@ -6,6 +6,12 @@
 .filters {
   justify-content:space-between;
   align-items:center;
+
+  & > * {
+    flex-grow: 1;
+    margin:0 1em;
+    max-width: calc(100vw - 4em);
+  }
 }
 
 .domain-cards {

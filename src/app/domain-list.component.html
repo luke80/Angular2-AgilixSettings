@@ -9,14 +9,17 @@
       {{sortOption.name}}
     </md-option>
   </md-select>
-  <md-slide-toggle [checked]="!sortAscending" (change)="sortAscending = !sortAscending;sortDomains()">Sort A-Z, old to recent</md-slide-toggle>
+  <md-slide-toggle [checked]="!sortAscending" (change)="sortAscending = !sortAscending;sortDomains();setSortingText();">
+    Sort A-Z, old to recent
+    <div class="fine-print">(Currently sorted {{ sorting }})</div>
+  </md-slide-toggle>
   <md-input-container>
-    <input mdInput [(ngModel)]="filterBy" (keyup)="filterDomains()" placeholder="Search names..." />
+    <input mdInput [(ngModel)]="filterBy" (keyup)="filterDomains()" placeholder="Filter by school name..." />
   </md-input-container>
 </div>
 <div *ngIf="domainResponse" class="domain-cards">
-  <md-card *ngFor="let domain of visibleDomains" class="pointer hover" tabindex="0" role="navigation" (click)="dummy()">
-    <div id="{{domain.userspace}}" class="logo"></div>
+  <md-card *ngFor="let domain of visibleDomains" class="pointer hover" tabindex="0" role="navigation" (click)="navigateToDomain(domain)">
+    <div id="domain-{{domain.userspace}}" class="logo"></div>
     <md-card-title>
       {{domain.name}}
       <div *ngIf="sortBy === 'userspace'" class="subtitle">{{domain.userspace}}</div>
