@@ -14,11 +14,14 @@ import { DialogContentComponent } from './material-demo/material-demo.component'
 import { WelcomeComponent } from './welcome.component';
 import { LoginComponent } from './login.component';
 import { DomainListComponent } from './domain-list.component';
+import { CourseListComponent } from './course-list.component';
+import { CourseSearchComponent } from './course-search.component';
 import { MaterialDemoComponent } from './material-demo/material-demo.component';
 
 //import { MenuComponent } from './menu/menu.component';
 import { AuthService } from './services/auth.service';
 import { RequestService } from './services/request.service';
+import { DataEmitterService } from './services/data-emitter.service';
 
 import { appRoutes } from './routes';
 import { AuthRouteActivator } from './services/auth-route-activator.service';
@@ -37,12 +40,15 @@ import { AuthRouteActivator } from './services/auth-route-activator.service';
     WelcomeComponent,
     MaterialDemoComponent,
     LoginComponent,
-    DomainListComponent
+    DomainListComponent,
+    CourseListComponent,
+    CourseSearchComponent
     //,MenuComponent
   ],
   providers: [
     AuthService,
     RequestService,
+    DataEmitterService,
     AuthRouteActivator,
     Location, {provide: LocationStrategy, useClass: PathLocationStrategy}
   ],

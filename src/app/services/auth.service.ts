@@ -16,6 +16,7 @@ export class AuthService implements OnInit {
   private loginUrl = 'https://gls.agilix.com/cmd/?_format=json';
   public relogin: Boolean = false;
   private ssoOnce = false;
+  public authenticated = false;
 
   constructor(private http: Http, private location: Location) { }
 
@@ -41,6 +42,7 @@ export class AuthService implements OnInit {
       .do( data => {
         if(data.response && data.response.user) {
           this.currentUser = <IUser> data.response.user
+          this.authenticated = true;
         }
       } )
       .do( () => console.log('loginUser currentUser: ',this.currentUser) )
@@ -58,7 +60,8 @@ export class AuthService implements OnInit {
       .map( (response: Response) => response.json() )
       .do( data => {
         if(data.response && data.response.user) {
-          this.currentUser = <IUser> data.response.user
+          this.currentUser = <IUser> data.response.user;
+          this.authenticated = true;
         } else {
           this.deleteCookie("sso_token")
         }
@@ -73,8 +76,7 @@ export class AuthService implements OnInit {
   }
 
   isAuthenticated() {
-    //console.log("isAuth(): ",(!!this.currentUser)?this.currentUser:null,(!!this.currentUser && !!this.currentUser.token)?this.currentUser.token:null);
-    return (!!this.currentUser && !!this.currentUser.token);
+    return this.authenticated;
   }
 
   initiateCasLogin(userspace: string) {

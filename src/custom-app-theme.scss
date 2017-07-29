@@ -225,3 +225,7 @@ $secondary-color: map-get($byu-app-accent, 500);
 .pointer {
   cursor: pointer;
 }
+
+.fine-print {
+  color: rgba(0, 0, 0, 0.38);
+}

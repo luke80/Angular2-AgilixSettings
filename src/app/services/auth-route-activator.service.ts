@@ -13,21 +13,19 @@ export class AuthRouteActivator implements CanActivate {
   }
 
   canActivate(route:ActivatedRouteSnapshot) {
+    if(this.authService.isAuthenticated())
+      return true;
+
     let token = this.getQueryStringValue("token");
     console.log("checking route:",token,window.location);
     if(!!token) {
-      this.authService.setCookie("sso_token", token);
-      console.log("cookie set with token: ", token);
-      if(!!this.authService.currentUser && !!token) {
-        this.authService.currentUser.token = token
-      }
+      this.sub = this.authService.authCasToken(token).subscribe();
     }
 
     if(!this.authService.isAuthenticated()) {
       if(!this.authService.checkCookie()) {
         //console.log('authService isAuthenticated():',this.authService.isAuthenticated(),window.location.pathname);
         this.authService.setCookie("pre-auth_path", window.location.pathname);
-        this.router.navigate(['/login']);
         return false;
       } else {
         let cookie = this.authService.getCookie("sso_token");

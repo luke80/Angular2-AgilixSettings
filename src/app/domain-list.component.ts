@@ -7,6 +7,8 @@ import 'rxjs/add/operator/catch';
 
 import { AuthService } from './services/auth.service';
 import { RequestService } from './services/request.service';
+import { DataEmitterService } from './services/data-emitter.service';
+
 import { IDlapResponse } from './models/dlap-response.model';
 
 @Component({
@@ -18,32 +20,29 @@ export class DomainListComponent implements OnInit {
   private domainResponse: IDlapResponse;
   private filterBy: string = "";
   private visibleDomains: any[] = [];
-  private sortOptions = [
-    {
+  private sortOptions = [{
       name: "Domain title",
       property: "name"
-    },
-    {
+    },{
       name: "Domain code",
       property: "userspace"
-    },
-    {
+    },{
       name: "Domain creation date",
       property: "creationdate"
-    },
-    {
+    },{
       name: "Domain update date",
       property: "modifieddate"
-    }
-  ];
+  }];
   public sortBy: string = "creationdate";
   public sortAscending: boolean = false;
+  public sorting: string = "";
   
-  constructor( private requestService: RequestService, private router: Router, private authService: AuthService, private http: Http ) {
+  constructor( private requestService: RequestService, private router: Router, private authService: AuthService, private http: Http, private dataService: DataEmitterService ) {
 
   }
 
   ngOnInit() {
+    this.setSortingText();
     this.requestService.doRequest('listdomains', {domainid:0,limit:1000,select:"data"}).subscribe(
       data => this.domainResponse = data,
       resp => {
@@ -148,7 +147,13 @@ export class DomainListComponent implements OnInit {
     return {"background-image": "url(https://"+domain.userspace+".brainhoney.com/resource/"+domain.id+"/"+domain.titleBgImage+")"};
   }
 
-  dummy(): void {
+  navigateToDomain(domain): void {
+    this.dataService.setData("domain-name",domain.name);
+    this.dataService.setData("domain-id",domain.id);
+    this.dataService.navigateToDomain(domain);
+  }
 
+  setSortingText(): void {
+      this.sorting = (this.sortAscending)?"Z-A, new to old":"A-Z, old to new";
   }
 }

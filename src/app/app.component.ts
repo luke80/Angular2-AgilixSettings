@@ -1,7 +1,11 @@
 import { Component, Optional } from '@angular/core';
 import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
 
+import {Subscription} from 'rxjs/Subscription';
+
 import { AuthService } from './services/auth.service'
+import { DataEmitterService } from  './services/data-emitter.service';
+
 import { IUser } from './models/user.model';
 
 @Component({
@@ -11,12 +15,18 @@ import { IUser } from './models/user.model';
 })
 
 export class AppComponent {
-  isDarkTheme = false;
+  private isDarkTheme = false;
+  private selectedDomain = "";
+  private subscription: Subscription;
 
-  constructor(private dialog: MdDialog, private authService: AuthService) {
-
+  constructor(private dialog: MdDialog, private authService: AuthService, private dataService: DataEmitterService) {
+    this.subscription = this.dataService.emitter.subscribe(data => {
+      console.log("app.component data subscription: ", data);
+      if(!!data && !!data['domain-name']) {
+        this.selectedDomain = data['domain-name'];
+      }
+    })
   }
-
   
   openDialog() {
     const dialogRef = this.dialog.open(DialogComponent);
@@ -25,6 +35,8 @@ export class AppComponent {
       //this.lastLoginResult = result;
     })
   }
+
+
 }
 
 @Component({

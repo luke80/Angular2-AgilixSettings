@@ -57,7 +57,8 @@
     <button md-button class="app-menu-button" (click)="sidenav.toggle()">
       <i class="material-icons">menu</i>
     </button>
-    <span class="title">Agilix Course Settings Display</span>
+    <span class="title" *ngIf="!selectedDomain">Agilix Course Settings Display</span>
+    <span class="title" *ngIf="!!selectedDomain">{{selectedDomain}}</span>
   </md-toolbar>
 
   <div class="app-content">
