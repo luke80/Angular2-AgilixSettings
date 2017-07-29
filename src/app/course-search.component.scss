@@ -1,0 +1,48 @@
+.course-cards, .filters {
+  display:flex;
+  flex-wrap:wrap;
+}
+
+.filters {
+  justify-content:space-between;
+  align-items:center;
+
+  & > * {
+    flex-grow: 1;
+    margin:0 1em;
+    max-width: calc(100vw - 4em);
+  }
+}
+
+.course-cards {
+  justify-content: space-around;
+  //align-content: stretch;
+  align-items: stretch;
+
+  md-card {
+    position:relative;
+    margin:1em;
+
+    flex-grow: 1;
+
+    .subtitle {
+      font-size:.75em;
+    }
+
+    .logo {
+      background-size:contain;
+      background-repeat:no-repeat;
+      background-position: 100% 50%;
+
+      float:right;
+      height:5em;
+      width:5em;
+      margin:-1em -1em 0 0;
+
+      display:none;
+      &[style] {
+        display:block;
+      }
+    }
+  }
+}
