@@ -54,6 +54,8 @@ export class AuthService implements OnInit {
     console.log("authCasToken: ",token);
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers, withCredentials: true });
+    console.log("this.loginUrl",this.loginUrl);
+    if(!this.loginUrl || typeof this.loginUrl != "string") this.loginUrl = "https://gls.agilix.com/login/?_format=json";
     return this.http.post(this.loginUrl.replace(/(cmd\/)/i,'$1login'),  {
       _token: token
     }, options)
@@ -98,7 +100,7 @@ export class AuthService implements OnInit {
       if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
     }
     //console.error("cookie not found", cname);
-    return null;
+    return "";
   }
   setCookie(cname, cvalue, exdays=2) {
     var d = new Date();
